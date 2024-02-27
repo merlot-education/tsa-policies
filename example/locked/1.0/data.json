@@ -1,0 +1,7 @@
+{
+  "trustedEmails": [
+    "example@example.com",
+    "test@example.com",
+    "policy@example.com"
+  ]
+}
