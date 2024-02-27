@@ -2,7 +2,16 @@ package example.GetLoginProofResult
 
 claims := ocm.getLoginProofResult(input.requestId)
 
-name = getName(claims)
+orgaUrl := concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.iss, "#", "%23")])
+resolvedOrgaMeta = http.send({"method": "get", "url": orgaUrl, "force_json_decode": true}).body.metadata
+
+orgaIsActive := true
+
+name = val {
+	orgaIsActive == true
+	val := getName(claims)
+}
+
 given_name = getGivenName(claims)
 family_name = getFamilyName(claims)
 middle_name = getMiddleName(claims)
