@@ -1,10 +1,22 @@
 package example.GetLoginProofResult
 
-claims := ocm.getLoginProofResult(input.requestId)
+# claims := ocm.getLoginProofResult(input.requestId)
+claims := {
+    "Vorname": "Test",
+    "Nachname": "Test",
+    "Organisation": "Some Orga",
+    "Role": "OrgLegRep",
+    "ID": "Test",
+    "subjectDID": "1234",
+    "iss": "did:web:marketplace.dev.merlot-education.eu#df15587a-0760-32b5-9c42-bb7be66e8076",
+    "sub": "1234",
+    "auth_time": "1234"
+}
 
 orgaUrl := concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.iss, "#", "%23")])
 resolvedOrgaMeta = http.send({"method": "get", "url": orgaUrl, "force_json_decode": true}).body.metadata
 
+# orgaIsActive := resolvedOrgaMeta.active
 orgaIsActive := true
 
 name = val {
