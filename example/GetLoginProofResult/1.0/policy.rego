@@ -1,7 +1,7 @@
 package example.GetLoginProofResult
 
 # claims := ocm.getLoginProofResult(input.requestId)
-claimsValues := {
+claims := {
     "Vorname": "Test",
     "Nachname": "Test",
     "Organisation": "Some Orga",
@@ -13,18 +13,24 @@ claimsValues := {
     "auth_time": "1234"
 }
 
-claims := val {
-	# init claims
-	val := claimsValues
+resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.iss, "#", "%23")]), "force_json_decode": true}).body.metadata
 
-	# fetch remote data
-	orgaUrl := concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claimsValues.iss, "#", "%23")])
-	resolvedOrgaMeta = http.send({"method": "get", "url": orgaUrl, "force_json_decode": true}).body.metadata
-	dummyActive = true
+inactiveCheck := val {
+	val := {}
 
 	# check if not active
-	#resolvedOrgaMeta.active != true
-	dummyActive != true
+	resolvedOrgaMeta.active != true
+
+	# cause an error
+	ocm.getLoginProofResult("garbage")
+}
+
+invalidFederatorCheck := val {
+	val := {}
+
+	# check if role is FedAdmin but organisation is not federator
+	claims.Role == "FedAdmin"
+	resolvedOrgaMeta.membershipClass != "FEDERATOR"
 
 	# cause an error
 	ocm.getLoginProofResult("garbage")
