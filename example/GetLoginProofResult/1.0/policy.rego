@@ -8,7 +8,8 @@ resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.
 
 metaEmptyCheck if {
 	# check if we could not resolve the metadata
-	not resolvedOrgaMeta
+	claims.issuerDID  # could resolve issuerDID but
+	not resolvedOrgaMeta # could not resolve meta
 
 	# cause an error
 	ocm.getLoginProofResult("garbage")
