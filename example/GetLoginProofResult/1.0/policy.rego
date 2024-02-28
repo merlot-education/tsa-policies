@@ -1,7 +1,7 @@
 package example.GetLoginProofResult
 
 # claims := ocm.getLoginProofResult(input.requestId)
-claims := {
+claimsValues := {
     "Vorname": "Test",
     "Nachname": "Test",
     "Organisation": "Some Orga",
@@ -13,62 +13,62 @@ claims := {
     "auth_time": "1234"
 }
 
-orgaUrl := concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.iss, "#", "%23")])
-resolvedOrgaMeta = http.send({"method": "get", "url": orgaUrl, "force_json_decode": true}).body.metadata
+claims := val {
+	# init claims
+	val := claimsValues
 
-# orgaIsActive := resolvedOrgaMeta.active
-orgaIsActive := true
+	# fetch remote data
+	orgaUrl := concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claimsValues.iss, "#", "%23")])
+	resolvedOrgaMeta = http.send({"method": "get", "url": orgaUrl, "force_json_decode": true}).body.metadata
+	dummyActive = true
 
-name = val {
-	orgaIsActive == true
-	val := getName(claims)
+	# check if not active
+	#resolvedOrgaMeta.active != true
+	dummyActive != true
+
+	# cause an error
+	ocm.getLoginProofResult("garbage")
 }
 
-given_name = getGivenName(claims)
-family_name = getFamilyName(claims)
-middle_name = getMiddleName(claims)
-preferred_username = getPreferredUsername(claims)
-gender = getGender(claims)
-birthdate = getBirthdate(claims)
-email = getEmail(claims)
-email_verified = getEmailVerified(claims)
-sub = getSub(claims)
+Vorname := getName(claims)
+Nachname = getFamilyName(claims)
+Organisation = getOrga(claims)
+Role = getRole(claims)
+ID = getID(claims)
+subjectDID = getSubjectDid(claims)
+issuerDID = getissuerDID(claims)
 iss = getIss(claims)
-auth_time = getAuthTime(claims)
+sub = getSub(claims)
+auth_time = getAuth_time(claims)
+
 
 getName(c) = x {
-	x = c.prcFirstName
-}
-getGivenName(c) = x {
-	x = c.prcFirstName
+	x = c.Vorname
 }
 getFamilyName(c) = x {
-	x = c.prcLastName
+	x = c.Nachname
 }
-getMiddleName(c) = x {
-	x = c.prcMiddleName
+getOrga(c) = x {
+	x = c.Organisation
 }
-getPreferredUsername(c) = x {
-	x = c.prcPreferredUsername
+getRole(c) = x {
+	x = c.Role
 }
-getGender(c) = x {
-	x = c.prcGender
+getID(c) = x {
+	x = c.ID
 }
-getBirthdate(c) = x {
-	x = c.prcBirthdate
-}
-getEmail(c) = x {
-	x = c.email
-}
-getEmailVerified(c) = x {
-	x = c.email_verified
-}
-getSub(c) = x {
+getSubjectDid(c) = x {
 	x = c.subjectDID
 }
-getIss(c) = x {
+getissuerDID(c) = x {
 	x = c.issuerDID
 }
-getAuthTime(c) = x {
+getIss(c) = x {
+	x = c.iss
+}
+getSub(c) = x {
+	x = c.sub
+}
+getAuth_time(c) = x {
 	x = c.auth_time
 }
