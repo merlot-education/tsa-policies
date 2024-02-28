@@ -1,5 +1,7 @@
 package example.GetLoginProofResult
 
+import future.keywords.if
+
 # claims := ocm.getLoginProofResult(input.requestId)
 claims := {
     "Vorname": "Test",
@@ -15,9 +17,7 @@ claims := {
 
 resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.iss, "#", "%23")]), "force_json_decode": true}).body.metadata
 
-inactiveCheck := val {
-	val := {}
-
+inactiveCheck if {
 	# check if not active
 	resolvedOrgaMeta.active != true
 
@@ -25,9 +25,7 @@ inactiveCheck := val {
 	ocm.getLoginProofResult("garbage")
 }
 
-invalidFederatorCheck := val {
-	val := {}
-
+invalidFederatorCheck if {
 	# check if role is FedAdmin but organisation is not federator
 	claims.Role == "FedAdmin"
 	resolvedOrgaMeta.membershipClass != "FEDERATOR"
