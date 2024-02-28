@@ -2,20 +2,17 @@ package example.GetLoginProofResult
 
 import future.keywords.if
 
-# claims := ocm.getLoginProofResult(input.requestId)
-claims := {
-    "Vorname": "Test",
-    "Nachname": "Test",
-    "Organisation": "Some Orga",
-    "Role": "OrgLegRep",
-    "ID": "Test",
-    "subjectDID": "1234",
-    "iss": "did:web:marketplace.dev.merlot-education.eu#df15587a-0760-32b5-9c42-bb7be66e8076",
-    "sub": "1234",
-    "auth_time": "1234"
-}
+claims := ocm.getLoginProofResult(input.requestId)
 
-resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.iss, "#", "%23")]), "force_json_decode": true}).body.metadata
+resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.issuerDID, "#", "%23")]), "force_json_decode": true}).body.metadata
+
+metaEmptyCheck if {
+	# check if we could not resolve the metadata
+	not resolvedOrgaMeta
+
+	# cause an error
+	ocm.getLoginProofResult("garbage")
+}
 
 inactiveCheck if {
 	# check if not active
@@ -34,7 +31,7 @@ invalidFederatorCheck if {
 	ocm.getLoginProofResult("garbage")
 }
 
-Vorname := getName(claims)
+Vorname = getName(claims)
 Nachname = getFamilyName(claims)
 Organisation = getOrga(claims)
 Role = getRole(claims)
