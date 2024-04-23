@@ -6,14 +6,14 @@ claims := ocm.getLoginProofResult(input.requestId)
 
 resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.issuerDID, "#", "%23")]), "force_json_decode": true}).body.metadata
 
+# check if we could resolve the metadata
 isValidMeta if {
-	# check if we could resolve the metadata
-	claims.issuerDID  # could resolve issuerDID but
+	claims.issuerDID  # could resolve issuerDID
 	resolvedOrgaMeta # could resolve meta
 }
 
+# check if  active
 isActive if {
-	# check if  active
 	resolvedOrgaMeta.active == true
 }
 
