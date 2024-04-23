@@ -17,7 +17,7 @@ isActive if {
 	resolvedOrgaMeta.active == true
 }
 
-// check if either the role is FedAdmin and orga is Federator or if role is not FedAdmin
+# check if either the role is FedAdmin and orga is Federator or if role is not FedAdmin
 isValidFederator if {
 	# check if role is FedAdmin and organisation is federator
 	claims.Role == "FedAdmin"
@@ -28,7 +28,7 @@ isValidFederator if {
 	claims.Role != "FedAdmin"
 }
 
-// resolve policy to true only if all 3 conditions match
+# resolve policy to true only if all 3 conditions match
 result if {
 	isValidMeta
 	isActive
