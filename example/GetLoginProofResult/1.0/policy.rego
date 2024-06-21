@@ -4,6 +4,8 @@ import future.keywords.if
 
 claims := ocm.getLoginProofResult(input.requestId)
 
+isWhitelisted := ocm.getWhitelisting(input.requestId)
+
 resolvedOrgaMeta := http.send({"method": "get", "url": concat("", ["https://api.dev.merlot-education.eu/organisations/organization/", replace(claims.issuerDID, "#", "%23")]), "force_json_decode": true}).body.metadata
 
 # check if we could resolve the metadata
@@ -33,6 +35,7 @@ result if {
 	isValidMeta
 	isActive
 	isValidFederator
+	isWhitelisted
 }
 
 Vorname = getName(claims)
